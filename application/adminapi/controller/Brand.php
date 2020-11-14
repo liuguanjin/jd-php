@@ -45,7 +45,23 @@ class Brand extends BaseApi
      */
     public function save(Request $request)
     {
-        //
+        //新增品牌
+        $params = input();
+        $validate = $this->validate($params,[
+            'name|品牌名称' => 'require',
+            'cate_id|所属分类' => 'require',
+            'is_hot|是否热门' => 'require',
+            'sort|排序' => 'require',
+        ]);
+        if ($validate !== true){
+            $this->fail($validate);
+        }
+        if (isset($params['logo']) && !empty($params['logo']) && is_file($params['logo'])){
+            \think\Image::open($params['logo'])->thumb(50,50)->save('.'.$params['logo']);
+        }
+        $brand = \app\adminapi\model\Brand::create($params,true);
+        $info = \app\adminapi\model\Brand::find($brand['id']);
+        $this->ok($info);
     }
 
     /**
@@ -57,6 +73,11 @@ class Brand extends BaseApi
     public function read($id)
     {
         //
+        $list = \app\adminapi\model\Brand::field('id,name,logo,desc,sort,is_hot,cate_id,url')->find($id);
+        if (empty($list)){
+            $this->fail('该品牌已不存在，请刷新');
+        }
+        $this->ok($list);
     }
 
     /**
@@ -79,7 +100,20 @@ class Brand extends BaseApi
      */
     public function update(Request $request, $id)
     {
-        //
+        //修改品牌
+        $params = input();
+        $validate = $this->validate($params,[
+           'name|品牌名称' => 'require',
+            'cate_id|所属分类' => 'require',
+            'is_hot|是否热门' => 'require',
+            'sort|排序' => 'require',
+        ]);
+        if ($validate !== true){
+            $this->fail($validate);
+        }
+        \app\adminapi\model\Brand::update($params,['id' => $id],true);
+        $brand = \app\adminapi\model\Brand::find($id);
+        $this->ok($brand);
     }
 
     /**
@@ -90,6 +124,12 @@ class Brand extends BaseApi
      */
     public function delete($id)
     {
-        //
+        //删除品牌
+        $total = \app\adminapi\model\Goods::where('brand_id',$id)->count();
+        if ($total > 0){
+            $this->fail('删除失败，该品牌下还有商品');
+        }
+        \app\adminapi\model\Brand::destroy($id);
+        $this->ok();
     }
 }

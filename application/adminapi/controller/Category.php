@@ -75,6 +75,9 @@ class Category extends BaseApi
             $params['pid_path_name'] = $pid['pid_path_name'].'_'.$pid['cate_name'];
         }
         $params['image_url'] = isset($params['image_url']) ? $params['image_url'] : '';
+        if (isset($params['image_url']) && !empty($params['image_url']) && is_file($params['image_url'])){
+            \think\Image::open($params['image_url'])->thumb(50,50)->save('.'.$params['image_url']);
+        }
         $category = \app\adminapi\model\Category::create($params,true);
         $info = \app\adminapi\model\Category::find($category['id']);
         $this->ok($info);

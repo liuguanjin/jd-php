@@ -26,5 +26,6 @@ Route::domain('adminapi',function(){
     Route::resource('roles','adminapi/role',[],['id' => '\d+']);
     Route::resource('categorys','adminapi/category',[],['id' => '\d+']);
     Route::resource('brands','adminapi/brand',[],['id' => '\d+']);
+    Route::resource('types','adminapi/type',[],['id' => '\d+']);
     Route::post('logo','adminapi/upload/logo');
 });
