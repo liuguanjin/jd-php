@@ -2,7 +2,10 @@
 
 namespace app\adminapi\controller;
 
+use app\adminapi\model\Attribute;
+use app\adminapi\model\SpecValue;
 use think\Controller;
+use think\Exception;
 use think\Request;
 
 class Type extends BaseApi
@@ -42,7 +45,95 @@ class Type extends BaseApi
      */
     public function save(Request $request)
     {
-        //
+        //添加模型
+        $params = input();
+        $validate = $this->validate($params,[
+            'type_name|模型名称' => 'require',
+            'specs|规格数组' => 'require|array',
+            'attrs|属性数组' => 'require|array',
+        ]);
+        if ($validate !== true){
+            $this->fail($validate);
+        }
+        \think\Db::startTrans();
+        try {
+            $type = \app\adminapi\model\Type::create(['type_name'=>$params['type_name']],true);
+            foreach ($params['specs'] as $i=>$v){
+                if (trim($v['spec_name']) == ''){
+                    unset($params['specs'][$i]);
+                    continue;
+                }else{
+                    foreach ($v['spec_values'] as $k=>$value){
+                        if (trim($value['spec_value']) == ''){
+                            unset($params['specs'][$i]['spec_values'][$k]);
+                        }
+                    }
+                    if (empty($params['specs'][$i]['spec_values'])){
+                        unset($params['specs'][$i]);
+                    }
+                }
+            }
+            if (empty($params['specs'])){
+                $this->fail('添加的规格值不符合要求');
+            }
+            $specs = [];
+            foreach ($params['specs'] as $i=>$spec){
+                $row = [
+                    'spec_name' => $spec['spec_name'],
+                    'sort' => $spec['sort'],
+                    'type_id' => $type['id']
+                ];
+                $specs[] = $row;
+            }
+            $spec_model =new \app\adminapi\model\Spec();
+            $spec_data = $spec_model->allowField(true)->saveAll($specs);
+            $spec_values = [];
+            foreach ($params['specs'] as $i=>$v){
+                foreach ($v['spec_values'] as $value){
+                    $row = [
+                        'spec_id' => $spec_data[$i]['id'],
+                        'spec_value' => $value['spec_value'],
+                        'type_id' => $type['id']
+                    ];
+                    $spec_values[] = $row;
+                }
+            }
+            $spec_value_model = new \app\adminapi\model\SpecValue();
+            $spec_value_model->allowField(true)->saveAll($spec_values);
+            foreach ($params['attrs'] as $i=>$attr){
+                if (trim($attr['attr_name']) == ''){
+                    unset($params['attrs'][$i]);
+                    continue;
+                }else{
+                    foreach ($attr['attr_values'] as $k=>$value){
+                        if (trim($value) == ''){
+                            unset($params['attrs'][$i]['attr_values'][$k]);
+                        }
+                    }
+                }
+            }
+            if (empty($params['attrs'])){
+                $this->fail('添加的属性值不符合要求');
+            }
+            $attrs = [];
+            foreach ($params['attrs'] as $attr){
+                $row = [
+                    'type_id' => $type['id'],
+                    'attr_name' => $attr['attr_name'],
+                    'attr_values' => implode(',',$attr['attr_values']),
+                    'sort' => $attr['sort']
+                ];
+                $attrs[] = $row;
+            }
+            $attr_model = new \app\adminapi\model\Attribute();
+            $attr_model->allowField(true)->saveAll($attrs);
+            \think\Db::commit();
+            $type = \app\adminapi\model\Type::find($type['id']);
+            $this->ok($type);
+        }catch (\Exception $e){
+            $this->fail($e->getMessage());
+            \think\Db::rollback();
+        }
     }
 
     /**
@@ -82,11 +173,93 @@ class Type extends BaseApi
         $params = input();
         $validate = $this->validate($params,[
             'type_name|模型名称' => 'require',
-            'spec|规格数组' => 'require|array',
-            'attr|属性数组' => 'require|array',
+            'specs|规格数组' => 'require|array',
+            'attrs|属性数组' => 'require|array',
         ]);
         if ($validate !== true){
             $this->fail($validate);
+        }
+        \think\Db::startTrans();
+        try {
+            \app\adminapi\model\Type::update(['type_name'=>$params['type_name']],['id'=>$id],true);
+            foreach ($params['specs'] as $i=>$v){
+                if (trim($v['spec_name']) == ''){
+                    unset($params['specs'][$i]);
+                    continue;
+                }else{
+                    foreach ($v['spec_values'] as $k=>$value){
+                        if (trim($value['spec_value']) == ''){
+                            unset($params['specs'][$i]['spec_values'][$k]);
+                        }
+                    }
+                    if (empty($params['specs'][$i]['spec_values'])){
+                        unset($params['specs'][$i]);
+                    }
+                }
+            }
+            if (empty($params['specs'])){
+                $this->fail('添加的规格值不符合要求');
+            }
+            \app\adminapi\model\Spec::destroy(['type_id'=>$id]);
+            $specs = [];
+            foreach ($params['specs'] as $i=>$spec){
+                $row = [
+                    'spec_name' => $spec['spec_name'],
+                    'sort' => $spec['sort'],
+                    'type_id' => $id
+                ];
+                $specs[] = $row;
+            }
+            $spec_model =new \app\adminapi\model\Spec();
+            $spec_data = $spec_model->allowField(true)->saveAll($specs);
+            \app\adminapi\model\SpecValue::destroy(['type_id'=>$id]);
+            $spec_values = [];
+            foreach ($params['specs'] as $i=>$v){
+                foreach ($v['spec_values'] as $value){
+                    $row = [
+                        'spec_id' => $spec_data[$i]['id'],
+                        'spec_value' => $value['spec_value'],
+                        'type_id' => $id
+                    ];
+                    $spec_values[] = $row;
+                }
+            }
+            $spec_value_model = new \app\adminapi\model\SpecValue();
+            $spec_value_model->allowField(true)->saveAll($spec_values);
+            foreach ($params['attrs'] as $i=>$attr){
+                if (trim($attr['attr_name']) == ''){
+                    unset($params['attrs'][$i]);
+                    continue;
+                }else{
+                    foreach ($attr['attr_values'] as $k=>$value){
+                        if (trim($value) == ''){
+                            unset($params['attrs'][$i]['attr_values'][$k]);
+                        }
+                    }
+                }
+            }
+            if (empty($params['attrs'])){
+                $this->fail('添加的属性值不符合要求');
+            }
+            \app\adminapi\model\Attribute::destroy(['type_id'=>$id]);
+            $attrs = [];
+            foreach ($params['attrs'] as $attr){
+                $row = [
+                    'type_id' => $id,
+                    'attr_name' => $attr['attr_name'],
+                    'attr_values' => implode(',',$attr['attr_values']),
+                    'sort' => $attr['sort']
+                ];
+                $attrs[] = $row;
+            }
+            $attr_model = new \app\adminapi\model\Attribute();
+            $attr_model->allowField(true)->saveAll($attrs);
+            \think\Db::commit();
+            $type = \app\adminapi\model\Type::find($id);
+            $this->ok($type);
+        }catch (\Exception $e){
+            $this->fail($e->getMessage());
+            \think\Db::rollback();
         }
     }
 
@@ -98,6 +271,22 @@ class Type extends BaseApi
      */
     public function delete($id)
     {
-        //
+        //删除模型
+        $goods = \app\adminapi\model\Goods::where('type_id',$id)->find();
+        if ($goods){
+            $this->fail('有商品在使用该模型，删除失败');
+        }
+        \think\Db::startTrans();
+        try {
+            \app\adminapi\model\Type::destroy($id);
+            \app\adminapi\model\Spec::destroy(['type_id',$id]);
+            \app\adminapi\model\SpecValue::destroy(['type_id',$id]);
+            \app\adminapi\model\Attribute::destroy(['type_id',$id]);
+            \think\Db::commit();
+            $this->ok();
+        }catch (\Exception $e){
+            \think\Db::rollback();
+            $this->fail('操作失败');
+        }
     }
 }
