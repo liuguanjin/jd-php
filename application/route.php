@@ -21,6 +21,9 @@ Route::domain('adminapi',function(){
     Route::get('adminlogout','adminapi/login/adminLogout');
     Route::get('nav','adminapi/auth/nav');
     Route::get('allrole','adminapi/role/getAllRole');
+    Route::get('allbrands','adminapi/brand/getAllBrand');
+    Route::get('specs','adminapi/type/getSpec');
+    Route::get('specvalues','adminapi/type/getSpecvalue');
     Route::resource('auths','adminapi/auth',[],['id' => '\d+']);
     Route::resource('admins','adminapi/admin',[],['id' => '\d+']);
     Route::resource('roles','adminapi/role',[],['id' => '\d+']);
@@ -29,4 +32,5 @@ Route::domain('adminapi',function(){
     Route::resource('types','adminapi/type',[],['id' => '\d+']);
     Route::resource('goods','adminapi/goods',[],['id' => '\d+']);
     Route::post('logo','adminapi/upload/logo');
+    Route::post('images','adminapi/upload/images');
 });

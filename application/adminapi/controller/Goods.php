@@ -45,7 +45,23 @@ class Goods extends BaseApi
      */
     public function save(Request $request)
     {
-        //
+        //添加商品
+        $params = input();
+        $validate = $this->validate($params,[
+            'goods_name|商品名称' => 'require',
+            'goods_price|商品价格' => 'require',
+            'goods_logo|商品logo' => 'require',
+            'market_price|市场价' => 'require',
+            'cost_price|成本价' => 'require',
+            'goods_number|商品库存' => 'require',
+            'cate_id|所属分类' => 'require|number',
+            'brand_id|所属品牌' => 'require|number',
+            'type_id|所属模型' => 'require|number',
+        ]);
+        if ($validate !== true){
+            $this->fail($validate);
+        }
+        
     }
 
     /**

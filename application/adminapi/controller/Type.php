@@ -289,4 +289,28 @@ class Type extends BaseApi
             $this->fail('操作失败');
         }
     }
+    public function getSpec()
+    {
+        $type_id = input('type_id');
+        if (empty($type_id)){
+            $this->fail('还未获取模型');
+        }
+        $spec = \app\adminapi\model\Spec::where('type_id',$type_id)->select();
+        if (empty($spec)){
+            $this->fail('该模型下暂无规格');
+        }
+        $this->ok($spec);
+    }
+    public function getSpecvalue()
+    {
+        $spec_id = input('spec_id');
+        if (empty($spec_id)){
+            $this->fail('还未获取规格');
+        }
+        $spec_value = \app\adminapi\model\SpecValue::where('spec_id',$spec_id)->select();
+        if (empty($spec_value)){
+            $this->fail('该规格下暂无规格值');
+        }
+        $this->ok($spec_value);
+    }
 }

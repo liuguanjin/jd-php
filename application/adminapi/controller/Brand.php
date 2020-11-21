@@ -132,4 +132,9 @@ class Brand extends BaseApi
         \app\adminapi\model\Brand::destroy($id);
         $this->ok();
     }
+    public function getAllBrand()
+    {
+        $brands = \app\adminapi\model\Brand::field('id,name')->select();
+        $this->ok($brands);
+    }
 }
