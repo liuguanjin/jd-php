@@ -24,6 +24,7 @@ Route::domain('adminapi',function(){
     Route::get('allbrands','adminapi/brand/getAllBrand');
     Route::get('specs','adminapi/type/getSpec');
     Route::get('specvalues','adminapi/type/getSpecvalue');
+    Route::get('attrs','adminapi/type/getAttr');
     Route::resource('auths','adminapi/auth',[],['id' => '\d+']);
     Route::resource('admins','adminapi/admin',[],['id' => '\d+']);
     Route::resource('roles','adminapi/role',[],['id' => '\d+']);

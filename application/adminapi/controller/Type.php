@@ -313,4 +313,16 @@ class Type extends BaseApi
         }
         $this->ok($spec_value);
     }
+    public function getAttr()
+    {
+        $type_id = input('type_id');
+        if (empty($type_id)){
+            $this->fail('还未获取模型');
+        }
+        $attr = \app\adminapi\model\Attribute::where('type_id',$type_id)->select();
+        if (empty($attr)){
+            $this->fail('该模型下暂无属性');
+        }
+        $this->ok($attr);
+    }
 }

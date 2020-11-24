@@ -16,7 +16,11 @@ class Upload extends BaseApi
         if (empty($file)){
             $this->fail('必须上传文件');
         }
-        $info = $file->validate(['size'=>1024*1024*10,'ext'=>'jpg,jpeg,png,gif'])->move(ROOT_PATH.'public'.DS.'uploads'.DS.$type);
+        $dir = ROOT_PATH.'public'.DS.'uploads'.DS.$type;
+        if (!is_dir($dir)){
+            mkdir($dir);
+        }
+        $info = $file->validate(['size'=>1024*1024*10,'ext'=>'jpg,jpeg,png,gif'])->move($dir);
         if ($info){
            $logo = DS.'uploads'.DS.$type.DS.$info->getSaveName();
            $this->ok($logo);
@@ -36,7 +40,7 @@ class Upload extends BaseApi
         foreach ($files as $file){
             $dir = ROOT_PATH . 'public' . DS . 'uploads' . DS . $type;
             if (!is_dir($dir)){
-                rmdir($dir);
+                mkdir($dir);
             }
             $info = $file->validate(['size' => 10*1024*1024,'ext'=>'jpg,jpeg,png,gif'])->move($dir);
             if ($info){
