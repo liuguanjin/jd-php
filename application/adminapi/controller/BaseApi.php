@@ -7,7 +7,7 @@ use think\Exception;
 
 class BaseApi extends Controller
 {
-    protected $no_login = ['login/adminlogin','login/homelogin','login/captcha'];
+    protected $no_login = ['login/adminlogin','login/adminlogout','login/homelogin','login/captcha'];
     public function _initialize()
     {
         parent::_initialize();
@@ -26,12 +26,12 @@ class BaseApi extends Controller
                 if (empty($user_id)){
                     $this->fail('未登录或token无效',403);
                 }
+                $this->request->get(['user_id'=>$user_id]);
+                $this->request->post(['user_id'=>$user_id]);
                 $auth_check = \app\adminapi\logic\AuthLogic::check();
                 if (!$auth_check){
                     $this->fail('没有权限访问');
                 }
-                $this->request->get(['user_id'=>$user_id]);
-                $this->request->post(['user_id'=>$user_id]);
             }
         }catch (\Exception $e){
             $this->fail($e->getMessage(),403);

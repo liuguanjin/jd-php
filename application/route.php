@@ -10,7 +10,7 @@
 // +----------------------------------------------------------------------
 
 use \think\Route;
-
+//后台接口
 Route::domain('adminapi',function(){
     Route::get('/','adminapi/index/index');
     Route::get('captcha/:id',"\\think\\captcha\\CaptchaController@index");
@@ -32,6 +32,12 @@ Route::domain('adminapi',function(){
     Route::resource('brands','adminapi/brand',[],['id' => '\d+']);
     Route::resource('types','adminapi/type',[],['id' => '\d+']);
     Route::resource('goods','adminapi/goods',[],['id' => '\d+']);
+    Route::resource('attr','adminapi/attr',[],['id' => '\d+']);
+    Route::resource('spec','adminapi/spec',[],['id' => '\d+']);
     Route::post('logo','adminapi/upload/logo');
     Route::post('images','adminapi/upload/images');
 });
+
+//前台接口
+Route::get('goods','homeapi/goods/index');
+Route::get('goodsdetail/:id','homeapi/goods/detail');

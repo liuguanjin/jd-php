@@ -11,4 +11,8 @@ class Spec extends Model
     {
         return $this->hasMany('SpecValue','spec_id');
     }
+    public function type()
+    {
+        return $this->belongsTo('Type','type_id','id')->bind('type_name');
+    }
 }

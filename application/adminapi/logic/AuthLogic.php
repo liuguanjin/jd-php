@@ -11,7 +11,7 @@ class AuthLogic {
         $user_id = input('user_id');
         $admin = \app\adminapi\model\Admin::find($user_id);
         $role_id = $admin['role_id'];
-        if ($role_id == 1){
+        if ($role_id === 1){
             return true;
         }
         $role = \app\adminapi\model\Role::find($role_id);
