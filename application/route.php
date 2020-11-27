@@ -34,6 +34,7 @@ Route::domain('adminapi',function(){
     Route::resource('goods','adminapi/goods',[],['id' => '\d+']);
     Route::resource('attr','adminapi/attr',[],['id' => '\d+']);
     Route::resource('spec','adminapi/spec',[],['id' => '\d+']);
+    Route::resource('store','adminapi/shop',[],['id' => '\d+']);
     Route::post('logo','adminapi/upload/logo');
     Route::post('images','adminapi/upload/images');
 });
