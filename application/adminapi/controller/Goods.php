@@ -21,7 +21,7 @@ class Goods extends BaseApi
         if (!empty($params['keyword'])){
             $where['goods_name'] = ['like',"%{$params['keyword']}%"];
         }
-        $list = \app\adminapi\model\Goods::with('category,brand,type')
+        $list = \app\adminapi\model\Goods::with('category,brand,type,shop_row')
             ->where($where)
             ->order('id asc')
             ->paginate(10);
@@ -104,7 +104,7 @@ class Goods extends BaseApi
             $this->ok($info);
         }catch (\Exception $e){
             \think\Db::rollback();
-            $this->fail('操作失败');
+            $this->fail($e->getMessage());
         }
     }
 
@@ -117,7 +117,7 @@ class Goods extends BaseApi
     public function read($id)
     {
         //商品详情
-        $goods = \app\adminapi\model\Goods::with('category_row,brand_row,goods_images,spec_goods')->find($id);
+        $goods = \app\adminapi\model\Goods::with('category_row,brand_row,goods_images,spec_goods,shop_row')->find($id);
         $goods['category'] = $goods['category_row'];
         unset($goods['category_row']);
         $goods['brand'] = $goods['brand_row'];

@@ -39,4 +39,12 @@ class Goods extends Model
     {
         return $this->hasMany('SpecGoods','goods_id','id');
     }
+    public function shop()
+    {
+        return $this->belongsTo('Shop','shop_id','id');
+    }
+    public function shopRow()
+    {
+        return $this->belongsTo('Shop','shop_id','id')->bind('shop_name');
+    }
 }

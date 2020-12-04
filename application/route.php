@@ -42,3 +42,13 @@ Route::domain('adminapi',function(){
 //前台接口
 Route::get('goods','homeapi/goods/index');
 Route::get('goodsdetail/:id','homeapi/goods/detail');
+Route::get('shopdetail/:id','homeapi/shop/detail');
+Route::get('cart/:id','homeapi/cart/read');
+Route::get('collect/:id','homeapi/collect/read');
+Route::get('footprint/:id','homeapi/footprint/read');
+Route::post('cart','homeapi/cart/index');
+Route::post('collect','homeapi/collect/index');
+Route::post('footprint','homeapi/footprint/index');
+Route::put('cart/:id','homeapi/cart/update');
+Route::put('collect/:id','homeapi/collect/update');
+Route::put('footprint/:id','homeapi/footprint/update');

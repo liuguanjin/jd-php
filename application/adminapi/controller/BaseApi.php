@@ -7,7 +7,7 @@ use think\Exception;
 
 class BaseApi extends Controller
 {
-    protected $no_login = ['login/adminlogin','login/adminlogout','login/homelogin','login/captcha'];
+    protected $no_login = ['login/adminlogin','login/adminlogout','login/homelogout','login/homelogin','login/captcha'];
     public function _initialize()
     {
         parent::_initialize();

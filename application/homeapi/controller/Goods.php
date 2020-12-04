@@ -16,7 +16,7 @@ class Goods extends BaseApi
         if (empty($params['page'])){
             $params['page'] = 1;
         }
-        $goods = \app\adminapi\model\Goods::where($where)->field('id,goods_name,goods_price,goods_number,goods_logo')->limit(10*($params['page']-1),10)->select();
+        $goods = \app\adminapi\model\Goods::with('shop')->where($where)->limit(10*($params['page']-1),10)->select();
         if (empty($goods)){
             $this->fail('服务器异常，获取商品列表失败');
         }
@@ -24,7 +24,7 @@ class Goods extends BaseApi
     }
     public function detail($id = "")
     {
-        $goods = \app\adminapi\model\Goods::with('goods_images,spec_goods,brand_row')->find($id);
+        $goods = \app\adminapi\model\Goods::with('goods_images,spec_goods,brand_row,shop')->find($id);
         if (empty($goods)){
             $this->fail('服务器异常，商品已不存在');
         }
