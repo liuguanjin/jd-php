@@ -12,7 +12,7 @@ class Collect extends BaseApi
         unset($params['/collect']);
         $goods = \app\adminapi\model\Goods::where('id', 'in', $params)->select();
         if (empty($goods)) {
-            $this->fail('暂无购物车数据');
+            $this->fail('暂无收藏夹数据');
         }
         $this->ok($goods);
     }

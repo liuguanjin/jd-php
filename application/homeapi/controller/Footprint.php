@@ -44,9 +44,16 @@ class Footprint extends BaseApi
         $params = input();
         unset($params["/footprint/{$id}"]);
         unset($params['id']);
+        if (empty($params)){
+            $this->fail();
+        }
         \think\Db::startTrans();
         try {
             foreach ($params as $k=>$v){
+                unset($params[$k]['create_time']);
+                unset($params[$k]['update_time']);
+                unset($params[$k]['delete_time']);
+                unset($params[$k]['id']);
                 $goods_ids = [];
                 foreach ($v['detail'] as $i){
                     $goods_ids[] = $i['id'];
@@ -62,7 +69,7 @@ class Footprint extends BaseApi
             $this->ok();
         }catch (\Exception $e){
             \think\Db::rollback();
-            $this->fail($e->getLine());
+            $this->fail($e->getMessage());
         }
     }
 }

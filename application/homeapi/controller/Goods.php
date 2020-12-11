@@ -34,4 +34,15 @@ class Goods extends BaseApi
         $goods['type'] = $type;
         $this->ok($goods);
     }
+    public function balanceGoods()
+    {
+        $params = input();
+        unset($params['/balancegoods']);
+        $goods = [];
+        foreach ($params as $k=>$v){
+            $goods[$k]['goods'] = \app\adminapi\model\Goods::with('shop')->find($v['goods_id']);
+            $goods[$k]['spec_goods'] = \app\adminapi\model\SpecGoods::find($v['spec_goods_id']);
+        }
+        $this->ok($goods);
+    }
 }
