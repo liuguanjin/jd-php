@@ -19,7 +19,24 @@ class Address extends BaseApi
         if (empty($user_id)){
             $this->fail('用户id违法');
         }
-        $address = \app\homeapi\model\Address::where('user_id',$user_id)->select();
+        $page = input('page');
+        if (!empty($page) && $page == 'balance'){
+            $address_all = \app\homeapi\model\Address::where('user_id',$user_id)->order('last_use','desc')->select();
+            $address_all = (new \think\Collection($address_all))->toArray();
+            $address = [];
+            foreach ($address_all as $k=>$v){
+                if ($v['is_default'] == 1){
+                    $address = $v;
+                    break;
+                }else{
+                    if ($v['last_use'] == 1){
+                        $address = $v;
+                    }
+                }
+            }
+        }else{
+            $address = \app\homeapi\model\Address::where('user_id',$user_id)->order('is_default','desc')->select();
+        }
         if (empty($address)){
             $this->fail('用户暂无收货地址');
         }
