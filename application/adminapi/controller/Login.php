@@ -107,7 +107,7 @@ class Login extends BaseApi
         $token = \tools\jwt\Token::getToken($info['id']);
         $data = [
             'token' => $token,
-            'user_id' => $info['id'],
+            'admin_id' => $info['id'],
             'username' => $info['username'],
             'nickname' => $info['nickname'],
             'email' => $info['email'],

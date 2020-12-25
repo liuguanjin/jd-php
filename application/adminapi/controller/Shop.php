@@ -20,7 +20,7 @@ class Shop extends BaseApi
         if (!empty($params['keyword'])){
             $where['shop_name'] = ['like',"%{$params['keyword']}%"];
         }
-        $shops = \app\adminapi\model\Shop::where($where)->select();
+        $shops = \app\adminapi\model\Shop::with('admin')->where($where)->select();
         if (empty($shops)){
             $this->fail('服务器异常,获取店铺列表失败');
         }
@@ -49,7 +49,8 @@ class Shop extends BaseApi
         $params = input();
         $validate = $this->validate($params,[
             'shop_name|店铺名称' => 'require',
-            'sort|店铺排序' => 'require'
+            'sort|店铺排序' => 'require',
+            'admin_id|所属管理员' => 'require'
         ]);
         if ($validate !== true){
             $this->fail($validate);
@@ -101,7 +102,8 @@ class Shop extends BaseApi
         $params = input();
         $validate = $this->validate($params,[
             'shop_name|店铺名称' => 'require',
-            'sort|店铺排序' => 'require'
+            'sort|店铺排序' => 'require',
+            'admin_id|所属管理员' => 'require'
         ]);
         if ($validate !== true){
             $this->fail($validate);

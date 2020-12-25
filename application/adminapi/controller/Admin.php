@@ -51,7 +51,6 @@ class Admin extends BaseApi
         $validate = $this->validate($params,[
             'username|管理员名称' => 'require|unique:admin',
             'email|邮箱' => 'require|email',
-            'nickname|昵称' => '',
             'role_id' => 'require|integer|gt:0',
             'password|密码' => 'length:6,20|^[a-zA-Z]\w{5,17}$'
         ]);
@@ -144,5 +143,10 @@ class Admin extends BaseApi
         }
         \app\adminapi\model\Admin::destroy($id);
         $this->ok();
+    }
+    public function allAdmin()
+    {
+        $admin = \app\adminapi\model\Admin::select();
+        $this->ok($admin);
     }
 }

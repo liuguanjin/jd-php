@@ -11,4 +11,8 @@ class Shop extends Model
     {
         return $this->hasMany('Goods','shop_id','id');
     }
+    public function admin()
+    {
+        return $this->belongsTo('Admin','admin_id','id')->bind(['admin_name'=>'username']);
+    }
 }

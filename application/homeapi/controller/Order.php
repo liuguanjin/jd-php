@@ -62,17 +62,21 @@ class Order extends BaseApi
             foreach ($params['goods_ids'] as $k=>$v){
                 $order_goods[$k]['goods_id'] = $v['goods_id'];
                 $goods = \app\adminapi\model\Goods::find($v['goods_id']);
-                $spec_goods = \app\adminapi\model\SpecGoods::find($v['spec_goods_id']);
                 $order_goods[$k]['goods_name'] = $goods['goods_name'];
+                $order_goods[$k]['shop_id'] = $goods['shop_id'];
                 $order_goods[$k]['goods_logo'] = $goods['goods_logo'];
                 $order_goods[$k]['goods_price'] = $goods['goods_price'];
-                $order_goods[$k]['spec_value_names'] = $spec_goods['value_names'];
                 $order_goods[$k]['user_id'] = $v['user_id'];
                 $order_goods[$k]['number'] = $v['number'];
                 $order_goods[$k]['spec_goods_id'] = $v['spec_goods_id'];
                 $order_goods[$k]['order_id'] = $info['id'];
                 $order_goods[$k]['status'] = 0;
                 $order_goods[$k]['is_comment'] = 0;
+                $spec_goods = \app\adminapi\model\SpecGoods::find($v['spec_goods_id']);
+                $order_goods[$k]['spec_value_names'] = $spec_goods['value_names'];
+                $order_goods[$k]['spec_price'] = $spec_goods['price'];
+                $shop = \app\adminapi\model\Shop::find($goods['shop_id']);
+                $order_goods[$k]['shop_name'] = $shop['shop_name'];
                 $order_goods_model = new \app\homeapi\model\OrderGoods();
                 $order_goods_model->allowField(true)->saveAll($order_goods);
                 $where = [];
@@ -136,14 +140,20 @@ class Order extends BaseApi
     }
     public function notify()
     {
-
+        $params = input();
+        dump($params);die();
     }
     public function callback()
     {
-
+        $params = input();
+        dump($params);die();
     }
-    public function orderNumber()
+    public function orderGoods($id="")
     {
-
+        $order_goods = \app\homeapi\model\OrderGoods::with('goods')->find($id);
+        if (empty($order_goods)){
+            $this->fail('数据错误,请返回');
+        }
+        $this->ok($order_goods);
     }
 }
