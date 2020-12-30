@@ -5,8 +5,6 @@
  * 说明：
  * 以下代码只是为了方便商户测试而提供的样例代码，商户可以根据自己网站的需要，按照技术文档编写,并非一定要使用该代码。
  */
-
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -397,9 +395,14 @@
 		sNow += String(vNow.getMinutes());
 		sNow += String(vNow.getSeconds());
 		sNow += String(vNow.getMilliseconds());
-		document.getElementById("WIDout_trade_no").value =  sNow;
+        /*
+		document.getElementById("WIDout_trade_no").value = sNow;
+        document.getElementById("WIDsubject").value = "测试";
+        document.getElementById("WIDtotal_amount").value = 0.01;
+        */
+        document.getElementById("WIDout_trade_no").value =  <?php echo $_GET['WIDTQout_trade_no']; ?>;
 		document.getElementById("WIDsubject").value = "测试";
-		document.getElementById("WIDtotal_amount").value = "0.01";
+		document.getElementById("WIDtotal_amount").value = <?php echo $_GET['WIDtotal_amount']; ?>;
 	}
 	GetDateNow();
 </script>

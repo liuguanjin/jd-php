@@ -53,7 +53,7 @@ class MyShop extends BaseApi
         $order_goods = \app\homeapi\model\OrderGoods::where('shop_id',$shop['id'])->select();
         $order_goods = (new \think\Collection($order_goods))->toArray();
         foreach ($order_goods as $k=>$v){
-            if ($v['status'] === 0){
+            if ($v['status'] === 1){
                 $data[] = $v;
             }
         }
@@ -74,7 +74,7 @@ class MyShop extends BaseApi
         $data['shipping_code'] = $params['shipping_code'];
         $data['shipping_name'] = $params['shipping_name'];
         $data['shipping_sn'] = $params['shipping_sn'];
-        $data['status'] = 1;
+        $data['status'] = 2;
         $data['goods_id'] = $order_goods['goods_id'];
         $data['goods_logo'] = $order_goods['goods_logo'];
         $data['goods_name'] = $order_goods['goods_name'];

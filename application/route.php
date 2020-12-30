@@ -133,6 +133,19 @@ Route::put('collect-shop/:id','homeapi/CollectShop/update');
 Route::get('evaluate-goods/:id','homeapi/Order/orderGoods');
 //前台的多图片上传接口
 Route::post('images','homeapi/upload/images');
+//前台的单图片上传接口
+Route::post('logo','homeapi/upload/logo');
 //评论接口
 Route::post('evaluate/:id','homeapi/evaluate/save');
-Route::post('alipay','homeapi/alipay/pay');
+//支付宝同步接口 一般用来做支付成功界面跳转
+Route::get('order/callback','homeapi/order/callback');
+//支付宝异步接口 本地测试不生效
+Route::get('order/notify','homeapi/order/notify');
+//收货接口
+Route::get('accept-goods/:id','homeapi/order/acceptGoods');
+//用户提醒发货接口
+Route::get('remind-goods/:id','homeapi/order/remindGoods');
+//用户信息接口
+Route::get('user/:id','homeapi/user/userDetail');
+//用户上传头像接口
+Route::post('avatar/:id','homeapi/user/avatar');

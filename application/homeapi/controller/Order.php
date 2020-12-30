@@ -146,7 +146,19 @@ class Order extends BaseApi
     public function callback()
     {
         $params = input();
-        dump($params);die();
+        require_once 'plugins/apply/config.php';
+        require_once 'plugins/apply/pagepay/service/AlipayTradeService.php';
+        $alipayService = new \AlipayTradeService($config);
+        $result = $alipayService->check($params);
+        if ($result){
+            $order_sn = $params['out_trade_no'];
+            \app\homeapi\model\Order::where('order_sn',$order_sn)->setField('order_status',1);
+            $order = \app\homeapi\model\Order::where('order_sn',$order_sn)->find();
+            \app\homeapi\model\OrderGoods::where('order_id',$order['id'])->setField('status',1);
+            $this->ok('订单已支付');
+        }else{
+            $this->fail('订单支付失败');
+        }
     }
     public function orderGoods($id="")
     {
@@ -155,5 +167,17 @@ class Order extends BaseApi
             $this->fail('数据错误,请返回');
         }
         $this->ok($order_goods);
+    }
+    //收货逻辑
+    public function acceptGoods($id="")
+    {
+        \app\homeapi\model\OrderGoods::where('id',$id)->setField('status',3);
+        $this->ok();
+    }
+    //用户提醒逻辑 将提醒状态置为1
+    public function remindGoods($id="")
+    {
+        \app\homeapi\model\OrderGoods::where('id',$id)->setField('is_remind',1);
+        $this->ok();
     }
 }
