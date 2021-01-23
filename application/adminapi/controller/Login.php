@@ -36,6 +36,36 @@ class Login extends BaseApi
         $data = \app\adminapi\model\User::find($user['id']);
         $this->ok($data);
     }
+    public function adminRegister()
+    {
+        //接收参数
+        $params = input();
+        //参数检测
+        $validate = $this->validate($params,[
+            'username|用户名' => 'require',
+            'password|密码' => 'require',
+            'code|验证码' => 'require',
+            'uniqid' => 'require'
+        ]);
+        if ($validate !== true){
+            $this->fail($validate);
+        }
+        session_id(cache('session_id_'.$params['uniqid']));
+        if (!captcha_check($params['code'],$params['uniqid'])){
+            $this->fail('验证码错误');
+        }
+        $where = [
+            'username' => $params['username'],
+        ];
+        $info = \app\adminapi\model\Admin::where($where)->find();
+        if (!empty($info)){
+            $this->fail('用户名已存在');
+        }
+        $params['password'] = encrypt_password($params['password']);
+        $user = \app\adminapi\model\Admin::create($params,true);
+        $data = \app\adminapi\model\Admin::find($user['id']);
+        $this->ok($data);
+    }
     public function homeLogin()
     {
         //接收参数

@@ -22,6 +22,8 @@ Route::domain('adminapi',function(){
     Route::post('homelogin','adminapi/login/homeLogin');
     //前台注册接口
     Route::post('homeregister','adminapi/login/homeRegister');
+    //后台管理员注册接口
+    Route::post('adminregister','adminapi/login/adminRegister');
     //前台退出接口
     Route::get('homelogout','adminapi/login/homeLogout');
     //后台登录接口
@@ -83,6 +85,8 @@ Route::domain('adminapi',function(){
 Route::get('goods','homeapi/goods/index');
 //商品详情接口
 Route::get('goodsdetail/:id','homeapi/goods/detail');
+//获取推荐商品接口
+Route::get('recommend-goods/:id','homeapi/goods/recommend');
 //店铺详情接口
 Route::get('shopdetail/:id','homeapi/shop/detail');
 //获取购物车数据接口
@@ -147,5 +151,17 @@ Route::get('accept-goods/:id','homeapi/order/acceptGoods');
 Route::get('remind-goods/:id','homeapi/order/remindGoods');
 //用户信息接口
 Route::get('user/:id','homeapi/user/userDetail');
+//获取用户昵称接口
+Route::get('nickname/:id','homeapi/nickname/index');
+//用户昵称检测接口
+Route::post('nickname','homeapi/nickname/checkNickname');
+//用户昵称修改接口
+Route::put('nickname/:id','homeapi/nickname/save');
+//用户性别修改接口
+Route::put('sex/:id','homeapi/sex/save');
+//获取用户个性签名接口
+Route::get('sign/:id','homeapi/sign/index');
+//修改用户个性签名接口
+Route::put('sign/:id','homeapi/sign/save');
 //用户上传头像接口
 Route::post('avatar/:id','homeapi/user/avatar');

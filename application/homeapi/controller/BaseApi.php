@@ -26,9 +26,9 @@ class BaseApi extends Controller
         ];
         json($res)->send();die;
     }
-    public function fail($msg='fail',$code=500)
+    public function fail($msg='fail',$code=500,$data=[])
     {
-        return $this->response($code,$msg);
+        return $this->response($code,$msg,$data);
     }
     public function ok($data=[],$code=200,$msg='success')
     {
