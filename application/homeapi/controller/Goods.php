@@ -51,7 +51,7 @@ class Goods extends BaseApi
     public function recommend()
     {
         $id=input('id');
-        if ($id === ''){
+        if ($id == 0){
             $params = input();
             $where = [];
             if (!empty($params['keyword'])){
@@ -82,7 +82,6 @@ class Goods extends BaseApi
             $keywords = implode(',',$keywords);
             $keywords = explode(',',$keywords);
             $keywords = array_unique($keywords);
-            dump($keywords);die();
         }
     }
 }
